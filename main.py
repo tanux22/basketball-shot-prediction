@@ -13,7 +13,7 @@ Listx=[item for item in range(0,1300)]
 prediction=False
 
 
-cap=cv2.VideoCapture('videos/vid (3).mp4')
+cap=cv2.VideoCapture('videos/vid (4).mp4')
 
 while True:
     success,img=cap.read()
@@ -24,24 +24,15 @@ while True:
     imgColor,mask=myColorFinder.update(img,hsvVals)
     #find the location of the ball
     imgContours,contours=cvzone.findContours(img,mask,minArea=200)
-    
-    # if contours:
-    #     cx,cy=contours[0]['center']
-    #     print(cx,cy)
-    #     cv2.circle(imgContours,(cx,cy),5,(0,255,0),cv2.FILLED)
-    
-    
+        
     if contours:
         posListX.append(contours[0]['center'][0])
         posListY.append(contours[0]['center'][1])
-        
-        
+          
     if posListX:
         #Polynomial Regression(Ax^2+Bx+C)
         #find the coefficints
         A,B,C=np.polyfit(posListX,posListY,2)
-        
-        
         
         for i,(posX,posY) in enumerate(zip(posListX,posListY)):
             pos=(posX,posY)
@@ -55,7 +46,6 @@ while True:
             y=int(A*x**2+B*x+C)
             cv2.circle(imgContours,(x,y),2,(255,0,255),cv2.FILLED)        
     
-            
         if len(posListX)<10:
             #prediction
             #x values=330 to 430
@@ -74,8 +64,6 @@ while True:
     
     imgContours=cv2.resize(imgContours,(0,0),None,0.7,0.7)
     #display
-    # cv2.imshow("Image",img)
     cv2.imshow("ImageColor",imgContours)  
     cv2.waitKey(100)
 
-# {'hmin': 0, 'smin': 116, 'vmin': 110, 'hmax': 16, 'smax': 255, 'vmax': 255}
